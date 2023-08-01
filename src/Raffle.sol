@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 // Layout of Contract:
 // version
 // imports
@@ -19,12 +21,36 @@
 // private
 // view & pure functions
 
-// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+import {VRFCoordinatorV2Interface} from "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import {VRFConsumerBaseV2} from "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+// Layout of Contract:
+// version
+// imports
+// errors
+// interfaces, libraries, contracts
+// Type declarations
+// State variables
+// Events
+// Modifiers
+// Functions
+
+// Layout of Functions:
+// constructor
+// receive function (if exists)
+// fallback function (if exists)
+// external
+// public
+// internal
+// private
+// view & pure functions
 
 pragma solidity ^0.8.19;
 
 import {VRFCoordinatorV2Interface} from "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import {VRFConsumerBaseV2} from "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import {AutomationCompatibleInterface} from "@chainlink/contracts/src/v0.8/interfaces/AutomationCompatibleInterface.sol";
 
 /**
  * @title A sample Raffle Contract
@@ -32,7 +58,7 @@ import {VRFConsumerBaseV2} from "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2
  * @notice This contract is for creating a sample raffle contract
  * @dev This implements the Chainlink VRF Version 2
  */
-contract Raffle is VRFConsumerBaseV2 {
+contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
     /* Errors */
     error Raffle__UpkeepNotNeeded(uint256 currentBalance, uint256 numPlayers, uint256 raffleState);
     error Raffle__TransferFailed();
@@ -154,7 +180,7 @@ contract Raffle is VRFConsumerBaseV2 {
      * calls to send the money to the random winner.
      */
     // CEI: Checks, Effects, Interractions
-    function fulfullRandomWords(uint256 requestId, uint256[] memory randomWords) internal override {
+    function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords) internal override {
         // s_players size 10
         // randomNumber 202
         // 202 % 10 ? what's doesn't divide evenly into 202?
@@ -178,8 +204,9 @@ contract Raffle is VRFConsumerBaseV2 {
     /**
      * Getter Functions
      */
-    function getEntranceFee() public view returns (uint256) {
-        return i_entranceFee;
+
+    function getRaffleState() public view returns (RaffleState) {
+        return s_raffleState;
     }
 
     function getNumWords() public pure returns (uint256) {
